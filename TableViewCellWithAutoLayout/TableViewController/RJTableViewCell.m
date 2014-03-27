@@ -52,7 +52,6 @@
         self.contentView.backgroundColor = [UIColor colorWithRed:0 green:1 blue:0 alpha:0.1];
         
         [self.contentView addSubview:titleLabel];
-
     }
     
     return self;

@@ -141,11 +141,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     RJTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     // Configure the cell for this indexPath
-    [cell updateFonts];
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
 //    cell.titleLabel.titleLabel.text =  [dataSourceItem valueForKey:@"title"];
-    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
-    
+//    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
+
     // Make sure the constraints have been added to this cell, since it may have just been created from scratch
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
@@ -170,11 +169,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     
     // Configure the cell for this indexPath
-    [cell updateFonts];
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
 //    cell.titleLabel.titleLabel.text =  [dataSourceItem valueForKey:@"title"];
-    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
-    
+//    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
+
     // Make sure the constraints have been added to this cell, since it may have just been created from scratch
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
