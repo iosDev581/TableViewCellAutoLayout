@@ -64,6 +64,9 @@
 {
     [self.contentView addSubview:[self newLabel]];
     [self.contentView addSubview:[self newLabel]];
+    [self.contentView addSubview:[self newLabel]];
+    [self.contentView addSubview:[self newLabel]];
+    [self.contentView addSubview:[self newLabel]];
 
     for (UILabel *label in self.contentView.subviews) {
         if ([label isKindOfClass:[UILabel class]]) {
