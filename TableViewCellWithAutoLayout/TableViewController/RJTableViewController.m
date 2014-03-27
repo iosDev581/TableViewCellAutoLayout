@@ -28,7 +28,7 @@
 #import "RJModel.h"
 #import "RJTableViewCell.h"
 
-static NSString *CellIdentifier = @"CellIdentifier";
+static NSString *CellIdentifier = @"RJTableViewCell";
 
 @interface RJTableViewController ()
 
@@ -45,6 +45,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 // See: https://github.com/caoimghgin/TableViewCellWithAutoLayout/issues/6
 @property (assign, nonatomic) BOOL isInsertingRow;
 
+@property (strong, nonatomic) RJTableViewCell *templateCell;
+
 @end
 
 @implementation RJTableViewController
@@ -55,7 +57,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self) {
         self.model = [[RJModel alloc] init];
         [self.model populateDataSource];
-        self.offscreenCells = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -63,14 +64,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        
-    [self.tableView registerClass:[RJTableViewCell class] forCellReuseIdentifier:CellIdentifier];
-    
+
     self.title = @"Auto Layout Table View";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(clear:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addRow:)];
     
     self.tableView.allowsSelection = NO;
+
+    [self.tableView registerClass:[RJTableViewCell class] forCellReuseIdentifier:NSStringFromClass([RJTableViewCell class])];
+    RJTableViewCell *cell = [[RJTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    self.templateCell = cell;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -143,82 +146,26 @@ static NSString *CellIdentifier = @"CellIdentifier";
     // Configure the cell for this indexPath
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
     [cell configWithData:[dataSourceItem valueForKey:@"title"]];
-//    cell.titleLabel.titleLabel.text =  [dataSourceItem valueForKey:@"title"];
-//    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
 
     // Make sure the constraints have been added to this cell, since it may have just been created from scratch
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
-    
+
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 50.0f;
-    // This project has only one cell identifier, but if you are have more than one, this is the time
-    // to figure out which reuse identifier should be used for the cell at this index path.
-    NSString *reuseIdentifier = CellIdentifier;
-    
-    // Use the dictionary of offscreen cells to get a cell for the reuse identifier, creating a cell and storing
-    // it in the dictionary if one hasn't already been added for the reuse identifier.
-    // WARNING: Don't call the table view's dequeueReusableCellWithIdentifier: method here because this will result
-    // in a memory leak as the cell is created but never returned from the tableView:cellForRowAtIndexPath: method!
-    RJTableViewCell *cell = [self.offscreenCells objectForKey:reuseIdentifier];
-    if (!cell) {
-        cell = [[RJTableViewCell alloc] init];
-        [self.offscreenCells setObject:cell forKey:reuseIdentifier];
-    }
-    
-    // Configure the cell for this indexPath
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
-    [cell configWithData:[dataSourceItem valueForKey:@"title"]];
-//    cell.titleLabel.titleLabel.text =  [dataSourceItem valueForKey:@"title"];
-//    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
+    [self.templateCell configWithData:[dataSourceItem valueForKey:@"title"]];
 
-    // Make sure the constraints have been added to this cell, since it may have just been created from scratch
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
-    
-    // The cell's width must be set to the same size it will end up at once it is in the table view.
-    // This is important so that we'll get the correct height for different table view widths, since our cell's
-    // height depends on its width due to the multi-line UILabel word wrapping. Don't need to do this above in
-    // -[tableView:cellForRowAtIndexPath:] because it happens automatically when the cell is used in the table view.
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableView.bounds), CGRectGetHeight(cell.bounds));
-    // NOTE: if you are displaying a section index (e.g. alphabet along the right side of the table view), or
-    // if you are using a grouped table view style where cells have insets to the edges of the table view,
-    // you'll need to adjust the cell.bounds.size.width to be smaller than the full width of the table view we just
-    // set it to above. See http://stackoverflow.com/questions/3647242 for discussion on the section index width.
-    
-    // Do the layout pass on the cell, which will calculate the frames for all the views based on the constraints
-    // (Note that the preferredMaxLayoutWidth is set on multi-line UILabels inside the -[layoutSubviews] method
-    // in the UITableViewCell subclass
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    // Get the actual height required for the cell
-    CGFloat height = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-    
-    // Add an extra point to the height to account for the cell separator, which is added between the bottom
-    // of the cell's contentView and the bottom of the table view cell.
+    // force layout
+    [self.templateCell setNeedsLayout];
+    [self.templateCell layoutIfNeeded];
+    CGFloat height = [self.templateCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+
     height += 1;
-    
     return height;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // NOTE for iOS 7.0.x ONLY, this bug has been fixed by Apple as of iOS 7.1:
-    // A constraint exception will be thrown if the estimated row height for an inserted row is greater
-    // than the actual height for that row. In order to work around this, we need to return the actual
-    // height for the the row when inserting into the table view - uncomment the below 3 lines of code.
-    // See: https://github.com/caoimghgin/TableViewCellWithAutoLayout/issues/6
-    //    if (self.isInsertingRow) {
-    //        return [self tableView:tableView heightForRowAtIndexPath:indexPath];
-    //    }
-
-    return 50.0f;
-    return UITableViewAutomaticDimension;
 }
 
 @end
