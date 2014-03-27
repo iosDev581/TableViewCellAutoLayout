@@ -29,6 +29,5 @@
 
 @interface RJTableViewCell : UITableViewCell
 
-- (void)updateFonts;
 
 @end
