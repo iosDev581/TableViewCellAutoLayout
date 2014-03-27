@@ -29,5 +29,6 @@
 
 @interface RJTableViewCell : UITableViewCell
 
+- (void)configWithData:(NSString *)data;
 
 @end

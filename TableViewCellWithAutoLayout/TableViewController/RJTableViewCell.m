@@ -41,20 +41,35 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-
-        UILabel *titleLabel = [UILabel newAutoLayoutView];
-        [titleLabel setLineBreakMode:NSLineBreakByTruncatingTail];
-        [titleLabel setNumberOfLines:1];
-        [titleLabel setTextAlignment:NSTextAlignmentLeft];
-        [titleLabel setTextColor:[UIColor blackColor]];
-        titleLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:0.1];
-
+        [self.contentView addSubview:[self newLabel]];
+        [self.contentView addSubview:[self newLabel]];
         self.contentView.backgroundColor = [UIColor colorWithRed:0 green:1 blue:0 alpha:0.1];
-        
-        [self.contentView addSubview:titleLabel];
     }
     
     return self;
+}
+
+- (UILabel *)newLabel
+{
+    UILabel *titleLabel = [UILabel newAutoLayoutView];
+    [titleLabel setLineBreakMode:NSLineBreakByTruncatingTail];
+    [titleLabel setNumberOfLines:1];
+    [titleLabel setTextAlignment:NSTextAlignmentLeft];
+    [titleLabel setTextColor:[UIColor blackColor]];
+    titleLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:0.1];
+
+    return titleLabel;
+}
+
+- (void)configWithData:(NSString *)data
+{
+    for (UILabel *label in self.contentView.subviews) {
+        if ([label isKindOfClass:[UILabel class]]) {
+            label.text = data;
+        }
+    }
+
+    [self setNeedsUpdateConstraints];
 }
 
 - (void)updateConstraints
@@ -74,12 +89,10 @@
 
 - (void)updateConstraintsForLabel:(UILabel *)label
 {
-    [UIView autoSetPriority:UILayoutPriorityRequired forConstraints:^{
-        [label autoSetContentCompressionResistancePriorityForAxis:ALAxisVertical];
-    }];
     [label autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kLabelVerticalInsets];
     [label autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:kLabelHorizontalInsets];
     [label autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:kLabelHorizontalInsets];
+    [label autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:kLabelHorizontalInsets];
 }
 
 - (void)layoutSubviews

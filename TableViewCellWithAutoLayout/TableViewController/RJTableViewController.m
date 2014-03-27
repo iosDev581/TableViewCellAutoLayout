@@ -142,6 +142,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     // Configure the cell for this indexPath
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
+    [cell configWithData:[dataSourceItem valueForKey:@"title"]];
 //    cell.titleLabel.titleLabel.text =  [dataSourceItem valueForKey:@"title"];
 //    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
 
@@ -154,6 +155,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    return 50.0f;
     // This project has only one cell identifier, but if you are have more than one, this is the time
     // to figure out which reuse identifier should be used for the cell at this index path.
     NSString *reuseIdentifier = CellIdentifier;
@@ -170,6 +172,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     // Configure the cell for this indexPath
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
+    [cell configWithData:[dataSourceItem valueForKey:@"title"]];
 //    cell.titleLabel.titleLabel.text =  [dataSourceItem valueForKey:@"title"];
 //    cell.bodyLabel.text = [dataSourceItem valueForKey:@"body"];
 
@@ -213,7 +216,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     //    if (self.isInsertingRow) {
     //        return [self tableView:tableView heightForRowAtIndexPath:indexPath];
     //    }
-    
+
+    return 50.0f;
     return UITableViewAutomaticDimension;
 }
 
