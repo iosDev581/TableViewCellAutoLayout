@@ -52,16 +52,18 @@
 {
     UILabel *titleLabel = [UILabel newAutoLayoutView];
     [titleLabel setLineBreakMode:NSLineBreakByTruncatingTail];
-    [titleLabel setNumberOfLines:1];
+    [titleLabel setNumberOfLines:0];
     [titleLabel setTextAlignment:NSTextAlignmentLeft];
     [titleLabel setTextColor:[UIColor blackColor]];
-    titleLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:0.1];
+    titleLabel.backgroundColor = [UIColor greenColor];
 
     return titleLabel;
 }
 
 - (void)configWithData:(NSString *)data
 {
+    [self resetLayout];
+
     [self.contentView addSubview:[self newLabel]];
     [self.contentView addSubview:[self newLabel]];
     [self.contentView addSubview:[self newLabel]];
@@ -80,10 +82,6 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
-
-    if (self.didSetupConstraints) {
-        return;
-    }
 
     for (int index = 0 ; index < [self.contentView.subviews count]; index++) {
 
@@ -106,7 +104,6 @@
         }
     }
 
-    self.didSetupConstraints = YES;
 }
 
 - (void)updateConstraintsForLabel:(UILabel *)label withPreviousLabel:(UILabel *)prevLabel
@@ -137,6 +134,17 @@
     
     // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
     // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
+}
+
+- (void)resetLayout
+{
+    for (UILabel *label in self.contentView.subviews) {
+        if ([label isKindOfClass:[UILabel class]]) {
+            [label removeFromSuperview];
+        }
+    }
+
+    [self.contentView setNeedsUpdateConstraints];
 }
 
 @end

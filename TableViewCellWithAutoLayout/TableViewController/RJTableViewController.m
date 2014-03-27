@@ -145,7 +145,7 @@ static NSString *CellIdentifier = @"RJTableViewCell";
     
     // Configure the cell for this indexPath
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
-    [cell configWithData:[dataSourceItem valueForKey:@"title"]];
+    [cell configWithData:[dataSourceItem valueForKey:@"body"]];
 
     // Make sure the constraints have been added to this cell, since it may have just been created from scratch
     [cell setNeedsUpdateConstraints];
@@ -157,11 +157,12 @@ static NSString *CellIdentifier = @"RJTableViewCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *dataSourceItem = [self.model.dataSource objectAtIndex:indexPath.row];
-    [self.templateCell configWithData:[dataSourceItem valueForKey:@"title"]];
+    [self.templateCell configWithData:[dataSourceItem valueForKey:@"body"]];
 
     // force layout
     [self.templateCell setNeedsLayout];
     [self.templateCell layoutIfNeeded];
+
     CGFloat height = [self.templateCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
 
     height += 1;
