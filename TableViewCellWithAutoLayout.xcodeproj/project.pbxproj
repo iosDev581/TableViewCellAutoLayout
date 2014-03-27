@@ -236,6 +236,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = RobotJackalope;
 				TargetAttributes = {
+					99BCDCA018008C0000B8E66B = {
+						DevelopmentTeam = BXU3B85A8F;
+					};
 					99BCDCBB18008C0000B8E66B = {
 						TestTargetID = 99BCDCA018008C0000B8E66B;
 					};
@@ -412,10 +415,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TableViewCellWithAutoLayout/TableViewCellWithAutoLayout-Prefix.pch";
 				INFOPLIST_FILE = "TableViewCellWithAutoLayout/TableViewCellWithAutoLayout-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -425,10 +431,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TableViewCellWithAutoLayout/TableViewCellWithAutoLayout-Prefix.pch";
 				INFOPLIST_FILE = "TableViewCellWithAutoLayout/TableViewCellWithAutoLayout-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -41,11 +41,10 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self.contentView addSubview:[self newLabel]];
-        [self.contentView addSubview:[self newLabel]];
         self.contentView.backgroundColor = [UIColor colorWithRed:0 green:1 blue:0 alpha:0.1];
+        self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     }
-    
+
     return self;
 }
 
@@ -63,6 +62,9 @@
 
 - (void)configWithData:(NSString *)data
 {
+    [self.contentView addSubview:[self newLabel]];
+    [self.contentView addSubview:[self newLabel]];
+
     for (UILabel *label in self.contentView.subviews) {
         if ([label isKindOfClass:[UILabel class]]) {
             label.text = data;
@@ -75,16 +77,42 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
-    
+
     if (self.didSetupConstraints) {
         return;
     }
 
-    for (UILabel *label in self.subviews) {
-        [self updateConstraintsForLabel:label];
+    for (int index = 0 ; index < [self.contentView.subviews count]; index++) {
+
+        UILabel *label = self.contentView.subviews[index];
+        UILabel *previourLabel = nil;
+        if (index - 1 >= 0) {
+            previourLabel = self.contentView.subviews[index-1];
+        }
+
+        [self updateConstraintsForLabel:label withPreviousLabel:previourLabel];
+
+        // first label
+        if (index == 0) {
+            [label autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10];
+        }
+
+        // last label
+        if (index == [self.contentView.subviews count] - 1) {
+            [label autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10];
+        }
     }
 
     self.didSetupConstraints = YES;
+}
+
+- (void)updateConstraintsForLabel:(UILabel *)label withPreviousLabel:(UILabel *)prevLabel
+{
+    if(prevLabel)
+        [label autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:prevLabel withOffset:10 relation:NSLayoutRelationEqual];
+    
+    [label autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:kLabelHorizontalInsets];
+    [label autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:kLabelHorizontalInsets];
 }
 
 - (void)updateConstraintsForLabel:(UILabel *)label
